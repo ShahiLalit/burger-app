@@ -25,6 +25,10 @@ class BurgerBuilder extends Component {
 
     }
 
+    purchaseContinueHandler = () => {
+        alert('Your Order is Placed!!');
+    }
+
     cancelPurchaseHandler = () => {
         this.setState({ showModal: false })
     }
@@ -81,7 +85,11 @@ class BurgerBuilder extends Component {
         return (
             <Aux>
                 <Modal show={this.state.showModal} canceled={this.cancelPurchaseHandler}>
-                    <OrderSummary ingredients={this.state.ingredients} />
+                    <OrderSummary
+                        ingredients={this.state.ingredients}
+                        purchaseCanceled={this.cancelPurchaseHandler}
+                        purchaseContinued={this.purchaseContinueHandler}
+                    />
                 </Modal>
                 <Burger ingredients={this.state.ingredients} />
                 <BuildControls
