@@ -26,7 +26,8 @@ class BurgerBuilder extends Component {
         purchasable: false,
         showModal: false,
         totalPrice: 10,
-        loading: false
+        loading: false,
+        error: false
 
     }
 
@@ -36,6 +37,9 @@ class BurgerBuilder extends Component {
                 this.setState({
                     ingredients: response.data
                 })
+            })
+            .catch(error => {
+                this.setState({error: true})
             })
     }
 
@@ -117,14 +121,15 @@ class BurgerBuilder extends Component {
         const disabledInfo = {
             ...this.state.ingredients
         }
-
+        // For each ingredient if the quantity is equal to 0, the button will get disabled.
         for (let key in disabledInfo) {
             disabledInfo[key] = disabledInfo[key] <= 0
         }
 
-        let orderSummary = <Spinner />
+        let orderSummary = null
 
-        let burger = <Spinner />
+        // Show spinnet while the ingredients are loaded from the backend. But if there is any error it won't show spineer but instead an error message.
+        let burger = this.state.error ? <p style={{textAlign: 'center'}}>Oops.. Sorry!! Ingredients can't be loaded.</p> : <Spinner />
 
         if (this.state.ingredients) {
             burger = (
