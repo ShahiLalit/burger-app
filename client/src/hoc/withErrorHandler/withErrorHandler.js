@@ -12,15 +12,23 @@ const withErrorHandler = (WrappedComponent, Axios) => {
 
         // To run the interceptors before we need to introduce the interceptors in the componentWillMount()
         componentWillMount() {
-            Axios.interceptors.request.use(request => {
+            this.reqInterceptors = Axios.interceptors.request.use(request => {
                 this.setState({ error: null })
                 return request;
             });
 
-            Axios.interceptors.response.use(response => response, error => {
+            this.resInterceptors = Axios.interceptors.response.use(response => response, error => {
                 console.log(error);
                 this.setState({ error: error })
             });
+        }
+
+        // We need to UnMount the interceptors after the component has been rendered successfully so that it does not run again and again with each rendering, which can lead to memory use and hinder the performance of the application.
+
+        componentWillUnmount(){
+            console.log("UNmounting", this.reqInterceptors, this.resInterceptors)
+            Axios.interceptors.request.eject(this.reqInterceptors); // Takes the reference of the interceptors 
+            Axios.interceptors.response.eject(this.resInterceptors); // created in the componentWillMount() lifecycle hook.
         }
 
         errorConfirmedHandler = () => {
